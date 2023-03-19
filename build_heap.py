@@ -1,44 +1,37 @@
-def build_heap(info): 
-    garums = len(info) 
-    swaps = [] 
-    for i in range(garums, -1, -1): 
-        j = i 
-        while True: 
-            zars = j*2 + 1 
-            if zars >= garums: 
-                break 
-            if zars+1 < garums and info[zars+1] < info[zars]: 
-                zars = zars+1 
-            if info[j] > info[zars]: 
-                swaps.append((j, zars)) 
-                info[j], info[zars] = info[zars], info[j] 
-                j = zars 
-            else: 
-                break 
-    return swaps 
- 
- 
-def main(): 
-    option = str(input()) 
-    if "I" in option: 
-        n = int(input()) 
-        data = list(map(int, input().split())) 
-        assert len(data) == n 
-        swaps = build_heap(data) 
-        print(len(swaps)) 
-        for i, j in swaps: 
-            print(i, j) 
-        return 
-    if "F" in option: 
-        file = str(input()) 
-        file = "tests/" + str(file) 
-        with open(file, 'r') as pakete: 
-            n = int(pakete.readline()) 
-            data = list(map(int, pakete.readline().split())) 
-        assert len(data) == n 
-        swaps = build_heap(data) 
-        print(len(swaps)) 
-        return    
- 
-if name == "__main__": 
+# python3
+
+from collections import namedtuple
+
+Bracket = namedtuple("Bracket", ["char", "position"])
+
+
+def are_matching(left, right):
+    return (left + right) in ["()", "[]", "{}"]
+
+
+def find_mismatch(text):
+    opening_brackets_stack = []
+    for a, next in enumerate(text):
+        if next in "([{":
+            opening_brackets_stack.append(Bracket(next, a + 1))
+
+        if next in ")]}":
+            if not opening_brackets_stack:
+                return a + 1
+    top = opening_brackets_stack.pop()
+    if not are_matching(top.char, next):
+
+        return a + 1
+    if opening_brackets_stack:
+        return opening_brackets_stack[0].position
+    
+    return "Success"
+
+def main():
+    text = input()
+    mismatch = find_mismatch(text)
+    print(mismatch)
+
+
+if __name__ == "__main__":
     main()
